@@ -38,14 +38,14 @@ Example:
 
       this.conn.onmessage = function(e) {
         var data = JSON.parse(e.data);
-        var resolve = this.promises[data.id];
+        var resolve = this._promises[data.id];
         resolve(data);
-        delete this.promises[data.id];
+        delete this._promises[data.id];
       }.bind(this);
     },
     _wsConnected: false,
-    promises: {},
-    requestId: 0,
+    _promises: {},
+    _requestId: 0,
     request: function(template, handler) {
       // wait for startup
       if (!this._wsConnected) {
@@ -56,9 +56,9 @@ Example:
       }
 
       var promise = new Promise(function(resolve, reject) {
-        this.promises[++this.requestId] = resolve;
+        this._promises[++this._requestId] = resolve;
         var msg = {};
-        msg.id = this.requestId;
+        msg.id = this._requestId;
 
         msg.data = {};
 
