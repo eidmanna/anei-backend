@@ -1,0 +1,33 @@
+{
+  "name": "anei-backend",
+  "version": "1.0.0",
+  "authors": [
+    "Eidmann"
+  ],
+  "description": "An element providing backend connectivity in a more generic way.",
+  "keywords": [
+    "web-component",
+    "web-components",
+    "polymer",
+    "backend",
+    "connectivity",
+    "request",
+    "web-socket"
+  ],
+  "main": "anei-backend.html",
+  "license": "http://polymer.github.io/LICENSE.txt",
+  "homepage": "https://github.com/eidmanna/anei-backend/",
+  "ignore": [
+    "/.*",
+    "/test/",
+    "/demo/"
+  ],
+  "dependencies": {
+    "promise-polyfill": "polymerlabs/promise-polyfill#^1.0.0",
+    "polymer": "Polymer/polymer#^1.0.0"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "web-component-tester": "*"
+  }
+}

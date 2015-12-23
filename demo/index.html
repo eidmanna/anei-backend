@@ -1,0 +1,112 @@
+<!doctype html>
+<!--
+@license MIT
+Copyright (c) 2015 Eidmann. All rights reserved.
+-->
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>anei-backend Demo</title>
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <link rel="import" href="../anei-backend.html">
+</head>
+
+<body>
+
+  <p>An example of
+    <code>&lt;anei-backend&gt;</code>:</p>
+
+
+  <dom-module id="module-one">
+    <template>
+      <anei-backend-handler id="initialHandler" action="actionInitial" input="" output="elemA,elemB,elemC"></anei-backend-handler>
+      <input value="{{elemA::input}}"></input>
+      <div>{{elemB}}</div>
+      <div>{{elemC}}</div>
+
+      <button on-click="actionSave">Save</button>
+      <anei-backend-handler id="saveHandler" action="actionSave" input="elemA" output="elemB,elemC"></anei-backend-handler>
+    </template>
+
+    <script>
+      Polymer({
+        is: 'module-one',
+        properties: {
+          myBackend: Object,
+          elemA: String,
+          elemB: String,
+          elemC: String
+        },
+        actionInitial: function() {
+          this.myBackend.request(this, this.$.initialHandler);
+        },
+        actionSave: function() {
+          this.myBackend.request(this, this.$.saveHandler);
+        }
+      });
+    </script>
+  </dom-module>
+  <dom-module id="module-two">
+    <template>
+
+      <anei-backend-handler id="initialHandler" action="actionInitial" input="" output="elemD,elemE,elemF"></anei-backend-handler>
+      <input value="{{elemD::input}}"></input>
+      <div>{{elemE}}</div>
+      <div>{{elemF}}</div>
+
+      <button on-click="actionSave">Save</button>
+      <anei-backend-handler id="saveHandler" action="actionSave1" input="elemD" output="elemE,elemF"></anei-backend-handler>
+    </template>
+
+    <script>
+      Polymer({
+        is: 'module-two',
+        properties: {
+          myBackend: Object,
+          elemD: String,
+          elemE: String,
+          elemF: String
+        },
+        actionInitial: function() {
+         this.myBackend.request(this, this.$.initialHandler);
+        },
+        actionSave: function() {
+          this.myBackend.request(this, this.$.saveHandler);
+        }
+      });
+    </script>
+  </dom-module>
+  <dom-module id="main-module">
+    <template>
+      <anei-backend id="myBackend" url="ws://localhost:8080/message"></anei-backend>
+      <div>
+        <module-one id="moduleOne" my-backend="{{myBackend}}"></module-one>
+      </div>
+      <div>
+        <module-two id="moduleTwo" my-backend="{{myBackend}}"></module-two>
+      </div>
+      <button on-click="actionSaveAll">SaveAll</button>
+    </template>
+  </dom-module>
+  <script>
+  Polymer({
+    is: 'main-module',
+    ready: function() {
+      this.myBackend = this.$.myBackend;
+
+      // initialAction
+      this.$.moduleOne.actionInitial();
+      this.$.moduleTwo.actionInitial();
+    },
+    actionSaveAll: function() {
+      this.$.moduleOne.actionSave();
+      this.$.moduleTwo.actionSave();
+    }
+  });
+  </script>
+  <main-module></main-module>
+</body>
+
+</html>

@@ -1,0 +1,51 @@
+<!--
+@license MIT
+Copyright (c) 2015 Eidmann. All rights reserved.
+-->
+<link rel="import" href="../polymer/polymer.html">
+
+<!--
+An element providing a generic backend connectivity.
+
+Example:
+
+    <anei-backend >
+      <anei-backend-handler action="saveData" input="elemA,elemB" output="elemA,elemC"></anei-backend-handler>
+    </anei-backend>
+
+@demo
+-->
+<script>
+  'use strict';
+  Polymer({
+
+    is: 'anei-backend-handler',
+
+    properties: {
+      action: {
+        type: String
+      },
+      input: {
+        type: String
+      },
+      output: {
+        type: String
+      }
+
+    },
+
+    // Element Lifecycle
+
+    ready: function() {
+
+    },
+
+    attached: function() {
+
+    },
+
+    detached: function() {
+
+    }
+  });
+</script>
