@@ -1,0 +1,30 @@
+<!--
+@license MIT
+Copyright (c) 2015 Eidmann. All rights reserved.
+-->
+
+<link rel="import" href="../anei-backend.html">
+
+<dom-module id="permanent-module">
+  <template>
+    <anei-backend id="myBackend" url="ws://localhost:8080/message"></anei-backend>
+    <anei-backend-handler id="permanentInitialHandler" action="actionPermanentInitial" input="" output="elemP" mode="PERMANENT"></anei-backend-handler>
+    <div>{{elemP}}</div>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'permanent-module',
+      properties: {
+        elemP: String
+      },
+      ready: function() {
+        // initialAction
+        this.actionPermanentInitial();
+      },
+      actionPermanentInitial: function() {
+        this.$.myBackend.generateRequest(this, this.$.permanentInitialHandler);
+      }
+    });
+  </script>
+</dom-module>

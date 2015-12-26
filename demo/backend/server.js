@@ -29,6 +29,14 @@ var backend = {
     result.elemE = data.elemA + 'Server Data 2';
     result.elemF = data.elemD + 'Server Data 3';
     return result;
+  },
+  actionPermanentInitial: function(msg, input, output, ws) {
+    setInterval(function() {
+      var result = {};
+      result.id = msg.id;
+      result.elemP = 'Server time: ' + Date.now();
+      ws.send(JSON.stringify(result));
+    }, 1000);
   }
 };
 
@@ -43,6 +51,11 @@ wss.on('connection', function connection(ws) {
 
     var input = msg.input.split(',');
     var output = msg.output.split(',');
+    if (msg.mode === 'PERMANENT') {
+      backend[msg.action](msg, input, output, ws);
+      return;
+    }
+
     var result = backend[msg.action](msg.data, input, output);
     result.id = msg.id;
     ws.send(JSON.stringify(result));

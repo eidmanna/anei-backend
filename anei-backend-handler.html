@@ -22,29 +22,34 @@ Example:
     is: 'anei-backend-handler',
 
     properties: {
+      /**
+       * The ACTION will be called on the backend.
+       */
       action: {
         type: String
       },
+      /**
+       * Comma separated list of values. The values will be send as JSON tho the backend.
+       */
       input: {
         type: String
       },
+      /**
+       * Comma separated list of values. The values, that return from the backend
+       * as JSON.
+       */
       output: {
         type: String
+      },
+      /**
+       * Mode:
+       * DEFAULT: One request will wait for one response.
+       * PERMANENT: One request will wait for many responses. (Server push)
+       */
+      mode: {
+        type: String,
+        value: 'DEFAULT'
       }
-
-    },
-
-    // Element Lifecycle
-
-    ready: function() {
-
-    },
-
-    attached: function() {
-
-    },
-
-    detached: function() {
 
     }
   });
