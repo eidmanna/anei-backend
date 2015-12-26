@@ -1,0 +1,40 @@
+<!--
+@license MIT
+Copyright (c) 2015 Eidmann. All rights reserved.
+-->
+
+<link rel="import" href="../anei-backend.html">
+
+<link rel="import" href="module-one.html">
+<link rel="import" href="module-two.html">
+
+<dom-module id="main-module">
+  <template>
+    <anei-backend id="myBackend" url="ws://localhost:8080/message"></anei-backend>
+    <div>
+      <module-one id="moduleOne" my-backend="{{myBackend}}"></module-one>
+    </div>
+    <div>
+      <module-two id="moduleTwo" my-backend="{{myBackend}}"></module-two>
+    </div>
+    <button on-click="actionSaveAll">SaveAll</button>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'main-module',
+      ready: function() {
+        // share single backend
+        this.myBackend = this.$.myBackend;
+
+        // initialAction
+        this.$.moduleOne.actionInitial();
+        this.$.moduleTwo.actionInitial();
+      },
+      actionSaveAll: function() {
+        this.$.moduleOne.actionSave();
+        this.$.moduleTwo.actionSave();
+      }
+    });
+  </script>
+</dom-module>

@@ -1,0 +1,36 @@
+<!--
+@license MIT
+Copyright (c) 2015 Eidmann. All rights reserved.
+-->
+
+<link rel="import" href="../anei-backend.html">
+
+<dom-module id="module-one">
+  <template>
+    <anei-backend-handler id="initialHandler" action="actionInitial" input="" output="elemA,elemB,elemC"></anei-backend-handler>
+    <input value="{{elemA::input}}"></input>
+    <div>{{elemB}}</div>
+    <div>{{elemC}}</div>
+
+    <button on-click="actionSave">Save</button>
+    <anei-backend-handler id="saveHandler" action="actionSave" input="elemA" output="elemB,elemC"></anei-backend-handler>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'module-one',
+      properties: {
+        myBackend: Object,
+        elemA: String,
+        elemB: String,
+        elemC: String
+      },
+      actionInitial: function() {
+        this.myBackend.generateRequest(this, this.$.initialHandler);
+      },
+      actionSave: function() {
+        this.myBackend.generateRequest(this, this.$.saveHandler);
+      }
+    });
+  </script>
+</dom-module>
