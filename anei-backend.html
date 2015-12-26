@@ -18,68 +18,74 @@ Example:
 -->
 <script>
   'use strict';
-  Polymer({
-    is: 'anei-backend',
-    properties: {
-      url: {
-        type: String
-      }
-    },
-    ready: function() {
-      this.conn = new WebSocket(this.url);
-      this.conn.onclose = function(e) {
-        // console.log("ws closed");
-      }.bind(this);
+  (function() {
+    var _requestId = 0;
 
-      this.conn.onopen = function(e) {
-        // console.log("ws connected");
-        this._wsConnected = true;
-      }.bind(this);
+    Polymer({
+      is: 'anei-backend',
+      properties: {
+        url: {
+          type: String
+        }
+      },
+      ready: function() {
+        this.conn = new WebSocket(this.url);
+        this.conn.onclose = function(e) {
+          // console.log("ws closed");
+        }.bind(this);
 
-      this.conn.onmessage = function(e) {
-        var data = JSON.parse(e.data);
-        var resolve = this._promises[data.id];
-        resolve(data);
-        delete this._promises[data.id];
-      }.bind(this);
-    },
-    _wsConnected: false,
-    _promises: {},
-    _requestId: 0,
-    request: function(template, handler) {
-      // wait for startup
-      if (!this._wsConnected) {
-        window.setTimeout(function() {
-          this.request(template, handler);
-        }.bind(this), 50);
-        return;
-      }
+        this.conn.onopen = function(e) {
+          // console.log("ws connected");
+          this._wsConnected = true;
+        }.bind(this);
 
-      var promise = new Promise(function(resolve, reject) {
-        this._promises[++this._requestId] = resolve;
-        var msg = {};
-        msg.id = this._requestId;
+        this.conn.onmessage = function(e) {
+          var data = JSON.parse(e.data);
+          var resolve = this._promises[data.id];
+          resolve(data);
+          delete this._promises[data.id];
+        }.bind(this);
+      },
+      _wsConnected: false,
+      _promises: {},
+      generateRequest: function(template, handler) {
+        // wait for startup
+        if (!this._wsConnected) {
+          window.setTimeout(function() {
+            this.generateRequest(template, handler);
+          }.bind(this), 50);
+          return;
+        }
 
-        msg.data = {};
+        var promise = new Promise(function(resolve, reject) {
+          this._promises[++_requestId] = resolve;
+          var msg = {};
+          msg.id = _requestId;
 
-        msg.input = handler.input;
-        msg.output = handler.output;
-        msg.action = handler.action;
+          msg.data = {};
 
-        var input = handler.input.split(',');
-        input.forEach(function(elem) {
-          msg.data[elem] = template[elem];
+          msg.input = handler.input;
+          msg.output = handler.output;
+          msg.action = handler.action;
+
+          var input = handler.input.split(',');
+          input.forEach(function(elem) {
+            msg.data[elem] = template[elem];
+          }.bind(this));
+          this.conn.send(JSON.stringify(msg));
         }.bind(this));
-        this.conn.send(JSON.stringify(msg));
-      }.bind(this));
-      promise.then(function(msg) {
-        var output = handler.output.split(',');
-        output.forEach(function(elem) {
-          template[elem] = msg[elem];
+        promise.then(function(msg) {
+          var output = handler.output.split(',');
+          output.forEach(function(elem) {
+            template[elem] = msg[elem];
+          }.bind(this));
         }.bind(this));
-      }.bind(this));
 
-    }
+      },
+      _generateId: function() {
 
-  });
+      }
+
+    });
+  })();
 </script>
