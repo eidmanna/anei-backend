@@ -1,0 +1,35 @@
+<!doctype html>
+<!--
+@license MIT
+Copyright (c) 2015 Eidmann. All rights reserved.
+-->
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>anei-backend Demo</title>
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <link rel="import" href="../anei-backend.html">
+
+  <link rel="import" href="simple-module.html">
+  <link rel="import" href="permanent-module.html">
+  <link rel="import" href="main-module.html">
+
+</head>
+
+<body>
+
+  <h1>An example of
+    <code>&lt;anei-backend&gt;</code>:</h1>
+  <h2>Example with simple module and separate backend/websocket:</h2>
+  <simple-module></simple-module>
+
+  <h2>Example with nested modules and shared backend/websocket:</h2>
+  <main-module></main-module>
+
+  <h2>Example with permanent mode/server push mode:</h2>
+  <permanent-module></permanent-module>
+</body>
+
+</html>

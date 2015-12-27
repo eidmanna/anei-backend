@@ -1,0 +1,56 @@
+<!--
+@license MIT
+Copyright (c) 2015 Eidmann. All rights reserved.
+-->
+<link rel="import" href="../polymer/polymer.html">
+
+<!--
+An element providing a generic backend connectivity.
+
+Example:
+
+    <anei-backend >
+      <anei-backend-handler action="saveData" input="elemA,elemB" output="elemA,elemC"></anei-backend-handler>
+    </anei-backend>
+
+@demo
+-->
+<script>
+  'use strict';
+  Polymer({
+
+    is: 'anei-backend-handler',
+
+    properties: {
+      /**
+       * The ACTION will be called on the backend.
+       */
+      action: {
+        type: String
+      },
+      /**
+       * Comma separated list of values. The values will be send as JSON tho the backend.
+       */
+      input: {
+        type: String
+      },
+      /**
+       * Comma separated list of values. The values, that return from the backend
+       * as JSON.
+       */
+      output: {
+        type: String
+      },
+      /**
+       * Mode:
+       * DEFAULT: One request will wait for one response.
+       * PERMANENT: One request will wait for many responses. (Server push)
+       */
+      mode: {
+        type: String,
+        value: 'DEFAULT'
+      }
+
+    }
+  });
+</script>

@@ -1,0 +1,110 @@
+<!--
+@license MIT
+Copyright (c) 2015 Eidmann. All rights reserved.
+-->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../promise-polyfill/promise-polyfill-lite.html">
+<link rel="import" href="anei-backend-handler.html">
+
+
+<!--
+The 'anei-backend' element exposes generic backend connectivity.
+
+Example:
+
+    <anei-backend url="ws://localhost:8080/message"></anei-backend>
+    <anei-backend-handler action="saveData" input="elemA,elemB" output="elemA,elemC"></anei-backend-handler>
+
+-->
+<script>
+  'use strict';
+  (function() {
+    var _requestId = 0;
+
+    Polymer({
+      is: 'anei-backend',
+      properties: {
+        url: {
+          type: String
+        }
+      },
+      ready: function() {
+        this.conn = new WebSocket(this.url);
+        this.conn.onclose = function(e) {
+          // console.log("ws closed");
+        }.bind(this);
+
+        this.conn.onopen = function(e) {
+          // console.log("ws connected");
+          this._wsConnected = true;
+        }.bind(this);
+
+        this.conn.onmessage = function(e) {
+          // deserialized
+          var msg = JSON.parse(e.data);
+          var resolve = this._promises[msg.id];
+          if (resolve) {
+            resolve(msg);
+          } else {
+            console.warn('no resolve found for id: ', msg.id);
+          }
+        }.bind(this);
+      },
+      _wsConnected: false,
+      _promises: {},
+      generateRequest: function(template, handler) {
+        // wait for startup
+        if (!this._wsConnected) {
+          window.setTimeout(function() {
+            this.generateRequest(template, handler);
+          }.bind(this), 50);
+          return;
+        }
+        this._createPromise(template, handler);
+
+      },
+      _createPromise: function(template, handler) {
+        var promise = new Promise(function(resolve, reject) {
+          this._promises[++_requestId] = resolve;
+          var msg = {};
+          msg.id = _requestId;
+
+          msg.data = {};
+
+          msg.input = handler.input;
+          msg.output = handler.output;
+          msg.action = handler.action;
+          msg.mode = handler.mode;
+
+          var input = handler.input.split(',');
+          input.forEach(function(elem) {
+            msg.data[elem] = template[elem];
+          }.bind(this));
+          // serialize
+          this.conn.send(JSON.stringify(msg));
+        }.bind(this));
+        this._promiseThen(promise, template, handler);
+      },
+      _promiseThen: function(promise, template, handler) {
+        promise.then(function(msg) {
+          // copy backendata to element
+          var output = handler.output.split(',');
+          output.forEach(function(elem) {
+            template[elem] = msg[elem];
+          }.bind(this));
+          // clean promises store
+          delete this._promises[msg.id];
+          // console.log('promises: ', Object.keys(this._promises).length);
+
+          // mode PERSISTEND
+          if (handler.mode === 'PERMANENT') {
+            var nextPromise = new Promise(function(resolve, reject) {
+              this._promises[msg.id] = resolve;
+            }.bind(this));
+            this._promiseThen(nextPromise, template, handler);
+          }
+        }.bind(this));
+      }
+    });
+  })();
+</script>
